@@ -9,14 +9,14 @@ app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname, '/static/index.html'));
 });
 
-app.get('/get_user', function(req, res) {
+app.get('/user', function(req, res) {
     var user = req.query.user;
     model.getUser(user, (ret) => {
-        if (ret) {
-            res.status(200);
+        if (ret && ret !== 'error') {
+            res.statusCode = 200;
             res.end(JSON.stringify(ret));
         } else {
-            res.status(499);
+            res.statusCode = 404;
             res.end("sorry, error!");
         }
     });

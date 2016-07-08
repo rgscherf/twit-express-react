@@ -200,19 +200,19 @@ var SearchBox = React.createClass({
     loadCommentsFromServer: function(query) {
         $.ajax({
             type: 'GET',
-            url: '/get_user',
+            url: '/user',
             contentType: "application/json; charset=utf-8",
             data: { user: query },
             success: function(data) {
-                console.log(data);
                 this.setState({
-                    user: data,
+                    user: JSON.parse(data),
                     error: false
                 });
             }.bind(this),
             error: function(xhr, status, err) {
+                console.error(xhr, status);
                 this.setState({
-                    error: true,
+                    error: true
                 });
             }.bind(this)
         });

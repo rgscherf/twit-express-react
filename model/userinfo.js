@@ -2,6 +2,7 @@ const request = require('request');
 var https = require('https');
 
 function options(urlString) {
+    // constructs options object for makeRequest()
     return {
         method: 'GET',
         hostname: 'api.github.com',
@@ -13,81 +14,54 @@ function options(urlString) {
     };
 }
 
-function getBasicInfo(s, cb) {
-    var o = options('/users/' + s);
+function makeRequest(opt, errorcb, callback) {
+    // handle streaming response from API server.
+    // args
+    // opt: options object
+    // errorcb: callback to main controller
+    // callback: callback function with signature cb(response-body)
     body = [];
-    https.get(o, (result) => {
+    https.get(opt, (result) => {
+        if (result.statusCode === 404) {
+            errorcb('error');
+        }
         result.on('data', (d) => {
             body.push(d);
         });
         result.on('end', () => {
-            body = Buffer.concat(body).toString();
-            body = JSON.parse(body);
-            var user = {
-                avatar_url: body.avatar_url,
-                html_url: body.html_url,
-                login: body.login,
-                name: body.name,
-                public_repos: body.public_repos
-            };
-            getCommits(user, cb);
+            body = JSON.parse(Buffer.concat(body).toString());
+            callback(body);
         });
+    });
+}
+
+function getBasicInfo(string, callback) {
+    // retrieve user's top-level info.
+    // args
+    // string: user's login
+    // callback: callback to controller with function cb(json)
+    var o = options('/users/' + string);
+    makeRequest(o, callback, (body) => {
+        var user = {
+            avatar_url: body.avatar_url,
+            html_url: body.html_url,
+            login: body.login,
+            name: body.name,
+            public_repos: body.public_repos
+        };
+        getCommits(user, callback);
     });
 }
 
 function getCommits(user, callback) {
+    // add user's commit stream to user object.
+    // args
+    // user: user object
+    // callback: callback to controller with signature cb(json)
     var o = options(`/users/${user.login}/events`);
-    body = [];
-    https.get(o, (result) => {
-        result.on('data', (chunk) => {
-            body.push(chunk);
-        });
-        result.on('end', () => {
-            body = JSON.parse(Buffer.concat(body).toString());
-            var cleanEvents = [];
-            body.forEach((e, _, __) => {
-                if (e.type === 'PushEvent') {
-                    e.payload.commits.forEach((c, ___, ____) => {
-                        repo_url = 'https://github.com/' + e.repo.name;
-                        out = {
-                            message: c.message,
-                            repo_name: e.repo.name,
-                            repo_url: repo_url,
-                            commit_url: `${repo_url}/commit/${c.sha}`,
-                            sha: c.sha,
-                            timestamp_raw: e.created_at,
-                            // datefromtimestamp should do something!
-                            timestamp_pretty: dateFromTimestamp(e.created_at)
-                        };
-                        cleanEvents.push(out);
-                    });
-                }
-            });
-            // sort cleanEvents
-            user.commits = cleanEvents;
-            callback(user);
-        });
-    });
-}
-
-function dateFromTimestamp(d) {
-    return d;
-}
-
-function getCommitsOld(user, callback) {
-    if (!user) {
-        return null;
-    }
-
-    var o = options(`https://api.github.com/users/${user.login}/events`);
-    request(o, (err, res, bod) => {
-        if (err) {
-            return null;
-        }
-
-        var dirtyEvents = JSON.parse(bod);
+    makeRequest(o, callback, (body) => {
         var cleanEvents = [];
-        dirtyEvents.forEach((e, _, __) => {
+        body.forEach((e, _, __) => {
             if (e.type === 'PushEvent') {
                 e.payload.commits.forEach((c, ___, ____) => {
                     repo_url = 'https://github.com/' + e.repo.name;
@@ -98,18 +72,25 @@ function getCommitsOld(user, callback) {
                         commit_url: `${repo_url}/commit/${c.sha}`,
                         sha: c.sha,
                         timestamp_raw: e.created_at,
+                        // datefromtimestamp should do something!
                         timestamp_pretty: dateFromTimestamp(e.created_at)
                     };
                     cleanEvents.push(out);
                 });
             }
         });
-        return cleanEvents;
+        // sort cleanEvents
+        user.commits = cleanEvents;
+        callback(user);
     });
 }
 
-getUser = function(userString, callback) {
+function dateFromTimestamp(d) {
+    return d;
+}
+
+function getUser(userString, callback) {
     getBasicInfo(userString, callback);
-};
+}
 
 module.exports.getUser = getUser;
