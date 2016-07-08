@@ -1,0 +1,35 @@
+{
+  "name": "twit3",
+  "version": "1.0.0",
+  "description": "port of Twit to express.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "babel --watch src/ --out-dir static/js/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rgscherf/twit3.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rgscherf/twit3/issues"
+  },
+  "homepage": "https://github.com/rgscherf/twit3#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "react": "^15.2.0",
+    "react-dom": "^15.2.0",
+    "request": "^2.72.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.10.1",
+    "babel-preset-react": "^6.5.0"
+  },
+  "babel": {
+    "presets": [
+      "react"
+    ]
+  }
+}
