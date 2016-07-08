@@ -8,8 +8,8 @@ function options(urlString) {
         hostname: 'api.github.com',
         path: urlString,
         headers: {
+            Authorization: 'token 68622003dbbabc59e105f357be2390c3ab418087',
             'User-Agent': 'rgscherf/twit3',
-            username: '68622003dbbabc59e105f357be2390c3ab418087'
         }
     };
 }
@@ -61,16 +61,16 @@ function getCommits(user, callback) {
     var o = options(`/users/${user.login}/events`);
     makeRequest(o, callback, (body) => {
         var cleanEvents = [];
-        body.forEach((e, _, __) => {
+        body.forEach((e) => {
             if (e.type === 'PushEvent') {
-                e.payload.commits.forEach((c, ___, ____) => {
+                e.payload.commits.forEach((c) => {
                     repo_url = 'https://github.com/' + e.repo.name;
                     out = {
                         message: c.message,
                         repo_name: e.repo.name,
                         repo_url: repo_url,
                         commit_url: `${repo_url}/commit/${c.sha}`,
-                        sha: c.sha,
+                        sha: c.sha.substring(0, 7), // only take first 7 chars
                         timestamp_raw: e.created_at,
                         // datefromtimestamp should do something!
                         timestamp_pretty: dateFromTimestamp(e.created_at)

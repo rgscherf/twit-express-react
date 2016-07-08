@@ -11,7 +11,7 @@ body {
     background: #f5ede3;
     color: #292f33;
     font-family: 'Open Sans', sans-serif;
-    font-size: 20px;
+    font-size: 16px;
 }
 
 
@@ -21,7 +21,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-around;
-    height: 200;
+    flex-wrap: wrap;
     background: #EDA639;
     margin-top: 10px;
     margin-bottom: 10px;
@@ -29,7 +29,7 @@ body {
 
 .titleBox {
     padding: 15px;
-    flex-grow: 1;
+    flex: 1 1 auto;
     color: black;
 }
 #logo {
@@ -43,10 +43,9 @@ body {
     font-size: 16px;
 }
 
-
 .searchContainer {
-    flex-grow: 2;
-    margin-left: 10px;
+    margin: 20px;
+    flex: 2 1 auto;
 }
 .mainSearch {
     font-size: 1em;
@@ -92,19 +91,22 @@ a:visited {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
+    justify-content: center;
 }
 
 
 .sidebar {
     margin-top: 10px;
     padding: 10px;
-    width: 200px;
+    flex: 0 0 200px;
+    align-self: flex-start;
     background: #EDA639;
     margin-right: 10px;
 }
 .sidebar img {
     width: 100%;
     border: 1px solid black;
+    border-radius: 4px;
     margin-right: auto;
     margin-left: auto;
 }
@@ -112,10 +114,10 @@ a:visited {
     font-size: 3em;
 }
 #userName {
-    font-size: 60px;
+    font-size: 48px;
 }
 #userUrl {
-    font-size: 20px;
+    font-size: 16px;
 }
 
 .timeline {
@@ -123,16 +125,18 @@ a:visited {
 }
 
 .twitCard {
+    font-family: 'Roboto Mono', monospace;
     padding: 10px;
     margin-bottom: 20px;
     background: #EDA639;
+    text-align: right;
+    max-width: 700px;
 }
 
-.twitCardHeadline {
-
+.twitCardMessage {
+    font-size: 24px;
+    margin: 20px;
+    text-align: left;
 }
 
-.twitCardBody {
-    font-size: 36;
-    padding-left: 20px;
-}
+
