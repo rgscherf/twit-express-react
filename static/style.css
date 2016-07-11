@@ -48,10 +48,10 @@ body {
     flex: 2 1 auto;
 }
 .mainSearch {
-    font-size: 1em;
+    font-size: 2em;
 }
 .searchError {
-    font-size: 16px;
+    font-size: 1em;
     color: #d31b21;
 }
 

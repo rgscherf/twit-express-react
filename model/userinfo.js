@@ -24,14 +24,15 @@ function makeRequest(opt, callback) {
     https.get(opt, (result) => {
         if (result.statusCode === 404) {
             callback(Error("Could not find Github user"));
+        } else {
+            result.on('data', (d) => {
+                body.push(d);
+            });
+            result.on('end', () => {
+                body = JSON.parse(Buffer.concat(body).toString());
+                callback(null, body);
+            });
         }
-        result.on('data', (d) => {
-            body.push(d);
-        });
-        result.on('end', () => {
-            body = JSON.parse(Buffer.concat(body).toString());
-            callback(null, body);
-        });
     });
 }
 
@@ -44,15 +45,16 @@ function getBasicInfo(string, callback) {
     makeRequest(o, (err, body) => {
         if (err) {
             callback(err);
+        } else {
+            var user = {
+                avatar_url: body.avatar_url,
+                html_url: body.html_url,
+                login: body.login,
+                name: body.name,
+                public_repos: body.public_repos
+            };
+            getCommits(user, callback);
         }
-        var user = {
-            avatar_url: body.avatar_url,
-            html_url: body.html_url,
-            login: body.login,
-            name: body.name,
-            public_repos: body.public_repos
-        };
-        getCommits(user, callback);
     });
 }
 
@@ -65,14 +67,15 @@ function getCommits(user, callback) {
     makeRequest(o, (err, body) => {
         if (err) {
             callback(err);
+        } else {
+            cleanEvents = getCleanEvents(body);
+            // sort cleanEvents by timstamp
+            cleanEvents.sort((a, b) => {
+                return a.timestamp_raw < b.timestamp_raw ? 1 : -1;
+            });
+            user.commits = cleanEvents;
+            callback(null, user);
         }
-        cleanEvents = getCleanEvents(body);
-        // sort cleanEvents by timstamp
-        cleanEvents.sort((a, b) => {
-            return a.timestamp_raw < b.timestamp_raw ? 1 : -1;
-        });
-        user.commits = cleanEvents;
-        callback(null, user);
     });
 }
 
