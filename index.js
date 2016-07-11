@@ -11,13 +11,13 @@ app.get('/', function(req, res) {
 
 app.get('/user', function(req, res) {
     var user = req.query.user;
-    model.getUser(user, (ret) => {
-        if (ret && ret !== 'error') {
+    model.getUser(user, (err, ret) => {
+        if (err) {
+            res.statusCode = 404;
+            res.end(err.message);
+        } else {
             res.statusCode = 200;
             res.end(JSON.stringify(ret));
-        } else {
-            res.statusCode = 404;
-            res.end("sorry, error!");
         }
     });
 });

@@ -14,7 +14,7 @@ function options(urlString) {
     };
 }
 
-function makeRequest(opt, errorcb, callback) {
+function makeRequest(opt, callback) {
     // handle streaming response from API server.
     // args
     // opt: options object
@@ -23,14 +23,14 @@ function makeRequest(opt, errorcb, callback) {
     body = [];
     https.get(opt, (result) => {
         if (result.statusCode === 404) {
-            errorcb('error');
+            callback(Error("Could not find Github user"));
         }
         result.on('data', (d) => {
             body.push(d);
         });
         result.on('end', () => {
             body = JSON.parse(Buffer.concat(body).toString());
-            callback(body);
+            callback(null, body);
         });
     });
 }
@@ -41,7 +41,10 @@ function getBasicInfo(string, callback) {
     // string: user's login
     // callback: callback to controller with function cb(json)
     var o = options('/users/' + string);
-    makeRequest(o, callback, (body) => {
+    makeRequest(o, (err, body) => {
+        if (err) {
+            callback(err);
+        }
         var user = {
             avatar_url: body.avatar_url,
             html_url: body.html_url,
@@ -59,7 +62,10 @@ function getCommits(user, callback) {
     // user: user object
     // callback: callback to controller with signature cb(json)
     var o = options(`/users/${user.login}/events`);
-    makeRequest(o, callback, (body) => {
+    makeRequest(o, (err, body) => {
+        if (err) {
+            callback(err);
+        }
         var cleanEvents = [];
         body.forEach((e) => {
             if (e.type === 'PushEvent') {
@@ -81,7 +87,7 @@ function getCommits(user, callback) {
         });
         // sort cleanEvents
         user.commits = cleanEvents;
-        callback(user);
+        callback(null, user);
     });
 }
 
