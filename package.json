@@ -4,7 +4,6 @@
   "description": "port of Twit to express.js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "babel --watch src/ --out-dir static/js/"
   },
   "repository": {

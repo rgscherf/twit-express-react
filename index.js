@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const model = require('./model/userinfo.js');
 const app = express();
+app.set('port', (process.env.PORT || 5000));
 
 app.use(express.static(__dirname + '/static'));
 
@@ -22,6 +23,6 @@ app.get('/user', function(req, res) {
     });
 });
 
-app.listen(5000, () => {
-    console.log("listening on port 5000");
+app.listen(app.get('port'), () => {
+    console.log(`listening on port ${app.get('port')}`);
 });
