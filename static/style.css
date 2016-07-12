@@ -7,6 +7,12 @@
     box-shadow: 4px 4px 10px 0px rgba(194,194,194,1);
 }
 
+#app {
+    width: 95%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
 body {
     background: #f5ede3;
     color: #292f33;
@@ -20,7 +26,7 @@ body {
 .searchBox {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
     flex-wrap: wrap;
     background: #EDA639;
     margin-top: 10px;
@@ -35,7 +41,7 @@ body {
 #logo {
     text-align: center;
     margin: auto;
-    font-size: 100px;
+    font-size: 80px;
     font-family: 'Bungee Shade', cursive;
 }
 #definition {
@@ -45,7 +51,7 @@ body {
 
 .searchContainer {
     margin: 20px;
-    flex: 2 1 auto;
+    flex: 0 1 auto;
 }
 .mainSearch {
     font-size: 2em;
@@ -86,14 +92,12 @@ a:visited {
     color: #e64a2d;
 }
 
-
 .contentContainer {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    justify-content: center;
+    justify-content: flex-start;
 }
-
 
 .sidebar {
     margin-top: 10px;
@@ -121,7 +125,7 @@ a:visited {
 }
 
 .timeline {
-    padding: 10px;
+    padding: 10px 0px 10px 10px;
 }
 
 .twitCard {
@@ -130,7 +134,6 @@ a:visited {
     margin-bottom: 20px;
     background: #EDA639;
     text-align: right;
-    max-width: 700px;
 }
 
 .twitCardMessage {
